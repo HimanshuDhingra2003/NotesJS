@@ -1,0 +1,6 @@
+API key: 348e5ba2938b8cfd5b0ed51c39a6c9f8
+
+
+
+link for api:
+https://api.openweathermap.org/data/2.5/weather?q=ghaziabad&appid=348e5ba2938b8cfd5b0ed51c39a6c9f8&units=metric

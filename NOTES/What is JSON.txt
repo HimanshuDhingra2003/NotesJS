@@ -1,0 +1,47 @@
+What is JSON?
+JSON, also known as JavaScript Object Notation, is a text-based data exchange format. It is a collection of key-value pairs with a few rules to keep in mind,
+
+The key must be a string type and enclosed in double-quotes.
+The value can be of any type, String, Boolean, Number, Object, Array, and null.
+A colon separates the key-value pair (:).
+Multiple key-value pairs are separated by a comma(,).
+All the key-value pairs must be enclosed within the curly braces({...})
+You can not use comments(like /.../ or //...) in JSON.
+Alright, with all that, let us see an example of JSON,
+
+
+COPY
+
+COPY
+{
+    "name": "Ravi K",
+    "age": 32,
+    "city": "Bangalore"
+}
+How to Parse JSON in JavaScript?
+We need to use the JSON.parse() method in JavaScript to parse a valid JSON string in a JavaScript Object.
+
+
+COPY
+
+COPY
+const employee = `{
+    "name": "Ravi K",
+    "age": 32,
+    "city": "Bangalore"
+}`;
+
+const employeeObj = JSON.parse(employee);
+console.log(employeeObj);
+The output is a JavaScript Object,
+
+JS Employee OBJ
+
+How to Handle a Parsing Error?
+When you parse a JSON text, you are likely to encounter a parsing error like this,
+
+Parsing Error
+
+It is mainly because the JSON is not a valid one. You must have missed one of the rules we have discussed above. Also, you are likely to forget to enclose the JSON text in a single quote('') or backtick(``) while assigned to a variable in JavaScript.
+
+When you encounter such errors, please validate your JSON with a JSON Linter.

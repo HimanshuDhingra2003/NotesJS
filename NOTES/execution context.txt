@@ -1,0 +1,18 @@
+execution context 
+It is an imaginary container that contains 
+1.variables,
+2.function inside that parent function and 
+3.lexical enviroment of that function
+  Lexical enviroment tells what your function can access or not
+execution context got created when function is called.
+
+#how to copy the value of array
+
+for example
+
+var a=[1,2,3,4,5];
+var b=[...a];
+
+if we change anything in a it remains in a and doesnt affect the
+value in array b
+And same format for the copying data from the object

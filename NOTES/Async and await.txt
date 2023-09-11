@@ -1,0 +1,125 @@
+Async and await
+
+
+In plain English,
+
+We use async to return a promise.
+We use await to wait and handle a promise
+
+
+
+await: This keyword is used to pause the execution of the function until the promise is resolved
+
+
+
+
+A Few Rules about using async/await
+We need to understand a few simple rules to use the async and await keywords.
+
+You can not use the await keyword in a regular, non-async function. JavaScript engine will throw a syntax error if you try doing so.
+
+function caller() {
+ // Using await in a non-async function.
+ const user = await fetchUserDetails();
+}
+
+// This will result in an syntax error
+caller();
+The function you use after the await keyword may or may not be an async function. There is no mandatory rule that it has to be an async function. Let's understand it with the following examples,
+
+Create a non-async function that returns the synchronous message, say, Hi.
+
+function getSynchronousHi() {
+  return 'Hi';
+}
+You can still use the keyword await while invoking the above function.
+
+async function caller() {
+  const messageHi = await getSynchronousHi();
+  console.log( messageHi);
+}
+
+caller(); // Output, 'Hi' in the console.
+As you see, we can use the await with a non-async function but, we can not use it within(or inside) a non-async function.
+
+The V8 engine(version >= 8.9) supports the top-level await in modules. It means you are allowed to use it outside of an async function. The Chrome DevTools, Node.js REPL support the top-level await for a while now. However, it is still not supported beyond the environments we just discussed.
+
+To use the top-level await in a non-supported environment, the solution is to wrap it into an anonymous function, like this,
+
+(async () => {
+   const user = await fetchUserDetails();
+})();
+How to Handle Errors with async/await?
+We learned about error handling using the .catch() handler method in the promise chain article. If the promise rejects, it throws the error, and we need to catch it to handle it.
+
+With the async/await keywords, we can handle the error with traditional try...catch. When there is an error, the control goes to the catch block. Please have a look at the example below.
+
+Assume we have a function that validates if the userId and password are blank. If so, throw an error by rejecting the promise. Otherwise, resolve it with a success message.
+
+const validateUser = ({userId, password}) => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            if (userId && password) {
+                resolve(`${userId} you have been authenticated successfully!!!`);
+            } else {
+                reject({message: 'userId or Password could be blank!'});
+            }
+
+        }, 2000);
+    });
+}
+As the above method returns a promise, we can handle it using the await keyword. Let us focus on the case where we pass the userId and password as empty strings.
+
+const app = async () => {
+    const data = {
+        userId: '',
+        password: ''
+    };
+
+    try {
+        console.log('Initializing...');
+        const result = await validateUser(data);
+        console.log(result);
+    } catch (e) {
+        console.error(e.message);
+    }
+}
+
+// invoke the function app
+app();
+When we invoke the app() function, the validateUser(data) will throw an error implicitly. We handle it using the try...catch in the app() function. The control will go to the catch block. We will get the error log as,
+
+error-catch.png
+
+If we pass valid userId and password values, we will see the expected result log in the console.
+
+Can We Write the PizzaHub example with async/await?
+Surely, I think that's a great idea. We have created APIs and the methods to handle the pizza order in the Robin and the PizzaHub Story. Remember the orderPizza() function? We handled the promises using the .then() and .catch() handler methods.
+
+Let's rewrite the orderPizza() function using async/await. You bet, it is a much simplified version as we see below,
+
+async function orderPizza(type, name) {
+    try{
+        // Get the Nearby Pizza Shop
+        const shopId = await fetch("/api/pizzahub/shop", {
+            'lang': 38.8951 , 
+            'lat': -77.0364});
+        // Get all pizzas from the shop  
+        const allPizzas = await fetch("/api/pizzahub/pizza", {
+            'shopId': shopId});
+        // Check the availability of the selected pizza
+        const pizza = await getMyPizza(allPizzas, type, name);
+        // Check the availability of the selected beverage
+        const beverage =  await fetch("/api/pizzahub/beverages", {
+            'pizzaId': pizza.id});
+        // Create the order
+        const result = await create("/api/order", {
+                beverage: beverage.name,
+                name: name,
+                type: type,
+            });
+        console.log(result.message);
+    } catch(error){
+        console.error(error.message);
+    };
+}

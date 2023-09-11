@@ -1,0 +1,121 @@
+Synchronous/Asynchronous HAS NOTHING TO DO WITH MULTI-THREADING.
+
+Synchronous or Synchronized means "connected", or "dependent" in some way. In other words, two synchronous tasks must be aware of one another, and one task must execute in some way that is dependent on the other, such as wait to start until the other task has completed.
+Asynchronous means they are totally independent and neither one must consider the other in any way, either in the initiation or in execution.
+
+We can classify most asynchronous JavaScript operations with two primary triggers:
+
+Browser API/Web API events or functions. These include methods like setTimeout, or event handlers like click, mouse over, scroll, and many more.
+Promises. A unique JavaScript object that allows us to perform asynchronous operations.
+
+
+
+In JavaScript, promises are special objects that help you perform asynchronous operations.
+
+You can create a promise using the Promise constructor. You need to pass an executor function to it. In the executor function, you define what you want to do when a promise returns successfully or when it throws an error. You can do that by calling the resolve and reject methods, respectively.
+
+Here is an example of a promise in JavaScript:
+
+const promise = new Promise((resolve, reject) =>
+        resolve('I am a resolved promise');
+);
+After the promise is executed, we can handle the result using the .then() method and any errors with the .catch() method.
+
+promise.then(result => console.log(result))
+You use promises every time you use the fetch() method to get some data from a store.
+
+The point here is that JavaScript engine doesn't use the same callback queue we have seen earlier for browser APIs. It uses another special queue called the Job Queue.
+
+
+What is the Job Queue in JavaScript?
+Every time a promise occurs in the code, the executor function gets into the job queue. The event loop works, as usual, to look into the queues but gives priority to the job queue items over the callback queue items when the stack is free.
+
+The item in the callback queue is called a macro task, whereas the item in the job queue is called a micro task.
+
+So the entire flow goes like this:
+
+For each loop of the event loop, one task is completed out of the callback queue.
+Once that task is complete, the event loop visits the job queue. It completes all the micro tasks in the job queue before it looks into the next thing.
+If both the queues got entries at the same point in time, the job queue gets preference over the callback queue.
+The image below shows the inclusion of the job queue along with other preexisting items.
+
+JObQ
+Now, let's look at an example to understand this sequence better:
+
+function f1() {
+    console.log('f1');
+}
+
+function f2() {
+    console.log('f2');
+}
+
+function main() {
+    console.log('main');
+    
+    setTimeout(f1, 0);
+    
+    new Promise((resolve, reject) =>
+        resolve('I am a promise')
+    ).then(resolve => console.log(resolve))
+    
+    f2();
+}
+
+main();
+In the above code, we have a setTimeout() function as before, but we have introduced a promise right after it. Now remember all that we have learned and guess the output.
+
+If your answer matches this, you are correct:
+
+main
+f2
+I am a promise
+f1
+Now let's see the flow of actions:
+
+Callback queue vs. Job queue
+The flow is almost the same as above, but it is crucial to notice how the items from the job queue prioritize the items from the task queue. Also note that it doesn't even matter if the setTimeout has zero delay. It is always about the job queue that comes before the callback queue.
+
+Alright, we have learned everything we need to understand synchronous and asynchronous execution in JavaScript.
+
+Here is a Quiz for You!
+Let's test your understanding by taking a quiz. Guess the output of the following code and apply all the knowledge we have gained so far:
+
+function f1() {
+ console.log('f1');
+}
+
+function f2() { 
+    console.log('f2');
+}
+
+function f3() { 
+    console.log('f3');
+}
+
+function main() {
+  console.log('main');
+
+  setTimeout(f1, 50);
+  setTimeout(f3, 30);
+
+  new Promise((resolve, reject) =>
+    resolve('I am a Promise, right after f1 and f3! Really?')
+  ).then(resolve => console.log(resolve));
+    
+  new Promise((resolve, reject) =>
+    resolve('I am a Promise after Promise!')
+  ).then(resolve => console.log(resolve));
+
+  f2();
+}
+
+main();
+Here is the expected output:
+
+main
+f2
+I am a Promise, right after f1 and f3! Really?
+I am a Promise after Promise!
+f3
+f1

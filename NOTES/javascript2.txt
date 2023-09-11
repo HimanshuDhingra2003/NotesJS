@@ -1,0 +1,16 @@
+There are 2 versions of javascript 
+  1.es5   2.es6
+
+  Old version of js i.e es5 contains only var for the decclaration of the variable
+  New version of js i.e. es6 contains let and const for the decclaration of the variable
+
+Difference between var,let and const
+  1.var is function scoped and var can be used in its parent function and it add itself
+  to the windows object
+  2.let is braces scoped and for example you use for loop and print a loop varible outside the 
+    loop then it will not print but using var can also do same and const also behave same like
+    let and one of the most important thing is that it can not add itself to the windows object.
+
+
+
+
